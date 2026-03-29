@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xeno's AI/ML Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.15);
+    --amber-glow: rgba(245,166,35,0.06);
+    --teal: #00d4aa;
+    --teal-dim: rgba(0,212,170,0.12);
+    --rose: #ff6b8a;
+    --rose-dim: rgba(255,107,138,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+    --text: #e8e8f0;
+    --text-muted: #6b6b80;
+    --text-dim: #9999aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s forwards;
+  }
+
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--amber);
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.1;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .header-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .header-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* JEE Banner */
+  .jee-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .jee-banner strong {
+    color: var(--amber);
+    font-weight: 500;
+  }
+
+  /* Synergy box */
+  .synergy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 16px 0 0;
+  }
+
+  .synergy-item {
+    background: var(--amber-glow);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .synergy-item .topic {
+    color: var(--amber);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* Phase cards */
+  .phase {
+    position: relative;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.7s forwards;
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.4s; }
+  .phase:nth-child(2) { animation-delay: 0.55s; }
+  .phase:nth-child(3) { animation-delay: 0.7s; }
+  .phase:nth-child(4) { animation-delay: 0.85s; }
+
+  .phase-header {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .phase-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 11px;
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    padding: 16px 12px;
+    border-radius: 8px 0 0 0;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .phase-title-block {
+    flex: 1;
+    padding: 18px 20px 18px 20px;
+    border-radius: 0 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .phase-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .phase-title small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    font-style: italic;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .phase-toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    opacity: 0.5;
+    transition: transform 0.3s, opacity 0.3s;
+    flex-shrink: 0;
+  }
+
+  .phase.open .phase-toggle {
+    transform: rotate(45deg);
+    opacity: 1;
+  }
+
+  .phase-body {
+    display: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+
+  .phase.open .phase-body {
+    display: block;
+  }
+
+  .phase-inner {
+    padding: 24px 24px 28px;
+    display: grid;
+    gap: 20px;
+  }
+
+  /* Color themes per phase */
+  .phase-1 .phase-number { background: rgba(0,212,170,0.2); color: var(--teal); }
+  .phase-1 .phase-title-block { background: var(--teal-dim); border-bottom: 1px solid rgba(0,212,170,0.15); }
+  .phase-1 .phase-body { background: var(--surface); border: 1px solid rgba(0,212,170,0.1); border-top: none; }
+  .phase-1 .track-header { border-color: var(--teal); color: var(--teal); }
+  .phase-1 .milestone { border-color: rgba(0,212,170,0.3); }
+  .phase-1 .milestone::before { background: var(--teal); }
+
+  .phase-2 .phase-number { background: rgba(245,166,35,0.2); color: var(--amber); }
+  .phase-2 .phase-title-block { background: var(--amber-dim); border-bottom: 1px solid rgba(245,166,35,0.15); }
+  .phase-2 .phase-body { background: var(--surface); border: 1px solid rgba(245,166,35,0.1); border-top: none; }
+  .phase-2 .track-header { border-color: var(--amber); color: var(--amber); }
+  .phase-2 .milestone { border-color: rgba(245,166,35,0.3); }
+  .phase-2 .milestone::before { background: var(--amber); }
+
+  .phase-3 .phase-number { background: rgba(255,107,138,0.2); color: var(--rose); }
+  .phase-3 .phase-title-block { background: var(--rose-dim); border-bottom: 1px solid rgba(255,107,138,0.15); }
+  .phase-3 .phase-body { background: var(--surface); border: 1px solid rgba(255,107,138,0.1); border-top: none; }
+  .phase-3 .track-header { border-color: var(--rose); color: var(--rose); }
+  .phase-3 .milestone { border-color: rgba(255,107,138,0.3); }
+  .phase-3 .milestone::before { background: var(--rose); }
+
+  .phase-4 .phase-number { background: rgba(167,139,250,0.2); color: var(--purple); }
+  .phase-4 .phase-title-block { background: var(--purple-dim); border-bottom: 1px solid rgba(167,139,250,0.15); }
+  .phase-4 .phase-body { background: var(--surface); border: 1px solid rgba(167,139,250,0.1); border-top: none; }
+  .phase-4 .track-header { border-color: var(--purple); color: var(--purple); }
+  .phase-4 .milestone { border-color: rgba(167,139,250,0.3); }
+  .phase-4 .milestone::before { background: var(--purple); }
+
+  /* Track */
+  .track {
+    display: grid;
+    gap: 10px;
+  }
+
+  .track-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    border-bottom: 1px solid;
+    opacity: 0.8;
+  }
+
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .skill-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    transition: all 0.2s;
+  }
+
+  .skill-tag:hover {
+    background: var(--surface);
+    color: var(--text);
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  .skill-tag.hot {
+    background: var(--amber-dim);
+    border-color: rgba(245,166,35,0.3);
+    color: var(--amber);
+  }
+
+  /* Milestones */
+  .milestone {
+    position: relative;
+    padding: 12px 14px 12px 28px;
+    border-left: 2px solid;
+    border-radius: 0 6px 6px 0;
+    background: var(--surface2);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  .milestone::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 16px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .milestone strong {
+    color: var(--text);
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* Resources */
+  .resources-list {
+    display: grid;
+    gap: 6px;
+  }
+
+  .resource {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+
+  .resource-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .resource-name {
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    font-size: 12px;
+  }
+
+  .resource-desc {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Time estimate */
+  .time-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Warning/tip boxes */
+  .tip-box {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(245,166,35,0.06);
+    border: 1px solid rgba(245,166,35,0.18);
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .tip-box .icon { font-size: 16px; flex-shrink: 0; }
+
+  /* Footer note */
+  .footer-note {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.7s 1s forwards;
+  }
+
+  .footer-note p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .footer-note p strong {
+    color: var(--amber);
+  }
+
+  /* Tracks row */
+  .tracks-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 560px) {
+    .tracks-row { grid-template-columns: 1fr; }
+    .synergy-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">
+      <span class="dot"></span>
+      Learning Roadmap · v1.0
+    </div>
+    <h1>Data Analytics &<br><em>AI / Machine Learning</em></h1>
+    <div class="header-meta">
+      <span>📍 PCM + JEE + MHT-CET</span>
+      <span>⏱ Grade 11 → College</span>
+      <span>🎯 4-Phase Plan</span>
+    </div>
+  </div>
+
+  <div class="jee-banner">
+    <strong>⚡ KEY INSIGHT — JEE IS NOT YOUR ENEMY HERE.</strong><br>
+    Your JEE prep is secretly building your AI/ML foundation. Every topic you study maps directly to what you'll need later — don't treat them as separate lives.
+    <div class="synergy-grid">
+      <div class="synergy-item">
+        <span class="topic">Calculus (JEE)</span>
+        Gradient descent, backpropagation in ML
+      </div>
+      <div class="synergy-item">
+        <span class="topic">Matrices (JEE)</span>
+        Linear algebra = the backbone of all ML
+      </div>
+      <div class="synergy-item">
+        <span class="topic">Probability (JEE)</span>
+        Naive Bayes, distributions, stats
+      </div>
+      <div class="synergy-item">
+        <span class="topic">Vectors (JEE)</span>
+        Word embeddings, feature spaces
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 1 -->
+  <div class="phase phase-1 open" onclick="toggle(this)">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 01</div>
+      <div class="phase-title-block">
+        <div class="phase-title">
+          Foundation
+          <small>Grade 11 · Now → ~Dec 2025</small>
+        </div>
+        <div class="phase-toggle">+</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-inner">
+
+        <div class="tip-box">
+          <span class="icon">🎯</span>
+          <span><strong style="color:var(--teal)">Goal:</strong> Python fluency + statistics + data intuition. You already code — this is about becoming dangerous with data, not learning from scratch. Keep it to <strong style="color:var(--text)">5–7 hrs/week</strong> alongside JEE.</span>
+        </div>
+
+        <div class="tracks-row">
+          <div class="track">
+            <div class="track-header">Python for Data</div>
+            <div class="skills-grid">
+              <span class="skill-tag">NumPy</span>
+              <span class="skill-tag">Pandas</span>
+              <span class="skill-tag">Matplotlib</span>
+              <span class="skill-tag">List comprehensions</span>
+              <span class="skill-tag">File I/O</span>
+              <span class="skill-tag hot">OOP basics</span>
+            </div>
+          </div>
+          <div class="track">
+            <div class="track-header">Math / Stats</div>
+            <div class="skills-grid">
+              <span class="skill-tag">Mean / Median / Mode</span>
+              <span class="skill-tag">Standard deviation</span>
+              <span class="skill-tag">Probability basics</span>
+              <span class="skill-tag">Distributions</span>
+              <span class="skill-tag hot">Bayes' theorem</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Milestones</div>
+          <div class="milestone">
+            <strong>Mini Project #1 — "My JEE Data Dashboard"</strong>
+            Scrape or manually enter your mock test scores. Use Pandas + Matplotlib to visualize weak areas by chapter. Real data, real problem, 0 cost.
+          </div>
+          <div class="milestone">
+            <strong>Mini Project #2 — EDA on any dataset</strong>
+            Pick any Kaggle dataset (Titanic, Iris). Do full Exploratory Data Analysis — clean, describe, visualize, extract insights. No ML yet.
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Resources</div>
+          <div class="resources-list">
+            <div class="resource">
+              <span class="resource-icon">📺</span>
+              <div>
+                <span class="resource-name">Corey Schafer — Python OOP</span>
+                <span class="resource-desc">youtube · free · 4 hrs total · best OOP tutorial on the internet</span>
+              </div>
+            </div>
+            <div class="resource">
+              <span class="resource-icon">📘</span>
+              <div>
+                <span class="resource-name">Kaggle's free micro-courses</span>
+                <span class="resource-desc">kaggle.com/learn · Python, Pandas, Data Viz · ~15 hrs total · certificate</span>
+              </div>
+            </div>
+            <div class="resource">
+              <span class="resource-icon">📺</span>
+              <div>
+                <span class="resource-name">StatQuest with Josh Starmer</span>
+                <span class="resource-desc">youtube · stats + ML concepts explained visually · binge on weekends</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase phase-2" onclick="toggle(this)">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 02</div>
+      <div class="phase-title-block">
+        <div class="phase-title">
+          Core ML + Analytics
+          <small>Grade 12 · ~Jan 2026 → ~May 2027</small>
+        </div>
+        <div class="phase-toggle">+</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-inner">
+
+        <div class="tip-box">
+          <span class="icon">⚠️</span>
+          <span><strong style="color:var(--amber)">Reality check:</strong> Grade 12 is brutal with boards + JEE/CET. Drop to <strong style="color:var(--text)">3–4 hrs/week</strong> during heavy exam months (Jan–April). Protect your exams — they're the actual gate to college. Resume full pace after CET.</span>
+        </div>
+
+        <div class="tracks-row">
+          <div class="track">
+            <div class="track-header">Data Analytics Track</div>
+            <div class="skills-grid">
+              <span class="skill-tag hot">SQL</span>
+              <span class="skill-tag">Seaborn</span>
+              <span class="skill-tag">Plotly</span>
+              <span class="skill-tag">Feature Engineering</span>
+              <span class="skill-tag">Data Cleaning</span>
+              <span class="skill-tag">Storytelling with data</span>
+              <span class="skill-tag">Google Sheets / Excel</span>
+            </div>
+          </div>
+          <div class="track">
+            <div class="track-header">ML Foundations</div>
+            <div class="skills-grid">
+              <span class="skill-tag hot">Scikit-learn</span>
+              <span class="skill-tag">Linear Regression</span>
+              <span class="skill-tag">Logistic Regression</span>
+              <span class="skill-tag">Decision Trees</span>
+              <span class="skill-tag">Random Forest</span>
+              <span class="skill-tag">Train/Test split</span>
+              <span class="skill-tag">Cross-validation</span>
+              <span class="skill-tag">Overfitting / Underfitting</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Milestones</div>
+          <div class="milestone">
+            <strong>Kaggle Competition — "Titanic" or "House Prices"</strong>
+            Submit an actual Kaggle entry. Score on the leaderboard. This forces you to think about feature engineering, model selection, evaluation metrics — all in one go.
+          </div>
+          <div class="milestone">
+            <strong>SQL Project — Local Business Analytics</strong>
+            Connect to your Neon PostgreSQL (you already have it). Build a mock "sales analytics" schema. Run aggregations, JOINs, window functions. SQL is the #1 hire-able data skill.
+          </div>
+          <div class="milestone">
+            <strong>Portfolio Project — Prediction App</strong>
+            Build a small Flask/Streamlit app that takes user input and runs a Scikit-learn model. Deploy it free on Railway. This is your first "real" AI project.
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Resources</div>
+          <div class="resources-list">
+            <div class="resource">
+              <span class="resource-icon">📘</span>
+              <div>
+                <span class="resource-name">Kaggle ML Course (free)</span>
+                <span class="resource-desc">kaggle.com/learn/intro-to-machine-learning · hands-on, no fluff, ~8 hrs</span>
+              </div>
+            </div>
+            <div class="resource">
+              <span class="resource-icon">📺</span>
+              <div>
+                <span class="resource-name">SQLZoo / Mode Analytics SQL Tutorial</span>
+                <span class="resource-desc">interactive SQL in browser · free · complete in ~10 hrs total</span>
+              </div>
+            </div>
+            <div class="resource">
+              <span class="resource-icon">📘</span>
+              <div>
+                <span class="resource-name">"Hands-On ML" — Aurélien Géron</span>
+                <span class="resource-desc">book · THE bible of practical ML · read chapters 1–8 this phase</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase phase-3" onclick="toggle(this)">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 03</div>
+      <div class="phase-title-block">
+        <div class="phase-title">
+          Deep Learning + Specialization
+          <small>Year 1 of College · 2027–2028</small>
+        </div>
+        <div class="phase-toggle">+</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-inner">
+
+        <div class="tip-box">
+          <span class="icon">🔱</span>
+          <span><strong style="color:var(--rose)">Fork point:</strong> By now, you choose whether you want to go deeper into <strong style="color:var(--text)">Data Analytics / BI</strong> (the "insight" path) or into <strong style="color:var(--text)">ML Engineering / Deep Learning</strong> (the "build models" path). Both are valid. Most people do both at a surface level — you'll go deep on one.</span>
+        </div>
+
+        <div class="tracks-row">
+          <div class="track">
+            <div class="track-header">Deep Learning Core</div>
+            <div class="skills-grid">
+              <span class="skill-tag hot">PyTorch</span>
+              <span class="skill-tag">Neural Networks</span>
+              <span class="skill-tag">CNNs</span>
+              <span class="skill-tag">RNNs / LSTMs</span>
+              <span class="skill-tag">Attention mechanism</span>
+              <span class="skill-tag hot">Transformers</span>
+              <span class="skill-tag">Transfer Learning</span>
+              <span class="skill-tag">Fine-tuning LLMs</span>
+            </div>
+          </div>
+          <div class="track">
+            <div class="track-header">MLOps + Deployment</div>
+            <div class="skills-grid">
+              <span class="skill-tag">Docker basics</span>
+              <span class="skill-tag">FastAPI</span>
+              <span class="skill-tag">Model monitoring</span>
+              <span class="skill-tag">MLflow</span>
+              <span class="skill-tag">Hugging Face</span>
+              <span class="skill-tag hot">Cloud (GCP/AWS basics)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Milestones</div>
+          <div class="milestone">
+            <strong>Karpathy Path — Build Neural Net from Scratch</strong>
+            You've already studied micrograd. Revisit it. Then do his "makemore" and nanoGPT series. Understanding the internals separates engineers from users.
+          </div>
+          <div class="milestone">
+            <strong>Kaggle Expert badge</strong>
+            Compete in 5 competitions, earn medals. Expert badge on Kaggle is a legitimate, verifiable credential that hiring managers actually check.
+          </div>
+          <div class="milestone">
+            <strong>Capstone — End-to-End ML System</strong>
+            Full pipeline: data ingestion → preprocessing → training → serving via API → monitoring. Deploy it. This is your hiring portfolio centerpiece.
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Resources</div>
+          <div class="resources-list">
+            <div class="resource">
+              <span class="resource-icon">🧠</span>
+              <div>
+                <span class="resource-name">fast.ai — Practical Deep Learning for Coders</span>
+                <span class="resource-desc">fast.ai · free · top-down approach · best intro to DL that exists</span>
+              </div>
+            </div>
+            <div class="resource">
+              <span class="resource-icon">📺</span>
+              <div>
+                <span class="resource-name">Andrej Karpathy's YouTube series</span>
+                <span class="resource-desc">youtube · "Neural Networks: Zero to Hero" · must-watch, non-negotiable</span>
+              </div>
+            </div>
+            <div class="resource">
+              <span class="resource-icon">🤗</span>
+              <div>
+                <span class="resource-name">Hugging Face NLP Course</span>
+                <span class="resource-desc">huggingface.co/learn · free · transformers, fine-tuning, pipelines</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase phase-4" onclick="toggle(this)">
+    <div class="phase-header">
+      <div class="phase-number">PHASE 04</div>
+      <div class="phase-title-block">
+        <div class="phase-title">
+          Advanced Research + Industry
+          <small>Year 2–3 of College · 2028+</small>
+        </div>
+        <div class="phase-toggle">+</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-inner">
+
+        <div class="tip-box">
+          <span class="icon">🚀</span>
+          <span><strong style="color:var(--purple)">Endgame:</strong> By this phase, you're not following roadmaps — you're reading papers and building original things. The goal shifts from "learn X" to "contribute to X." Open source, research papers, internships, startups — this is where it gets real.</span>
+        </div>
+
+        <div class="tracks-row">
+          <div class="track">
+            <div class="track-header">Advanced ML Areas</div>
+            <div class="skills-grid">
+              <span class="skill-tag hot">Reinforcement Learning</span>
+              <span class="skill-tag">Diffusion Models</span>
+              <span class="skill-tag">Graph Neural Networks</span>
+              <span class="skill-tag">LLM fine-tuning (LoRA)</span>
+              <span class="skill-tag">RAG systems</span>
+              <span class="skill-tag">AI Agents</span>
+            </div>
+          </div>
+          <div class="track">
+            <div class="track-header">Career Actions</div>
+            <div class="skills-grid">
+              <span class="skill-tag hot">Open source PRs</span>
+              <span class="skill-tag">Research paper reading</span>
+              <span class="skill-tag">arXiv daily habit</span>
+              <span class="skill-tag">Internships</span>
+              <span class="skill-tag">Technical blog</span>
+              <span class="skill-tag">Network on LinkedIn/X</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="track">
+          <div class="track-header">Milestones</div>
+          <div class="milestone">
+            <strong>First Open Source Contribution</strong>
+            Pick a library you use (Scikit-learn, Hugging Face, LangChain). Fix a bug, improve docs, add a test. Your GitHub becomes your actual resume.
+          </div>
+          <div class="milestone">
+            <strong>Replicate a Paper</strong>
+            Pick any ICLR / NeurIPS paper and reproduce its results. Write a blog post about what you learned. This signals serious intent to any company or grad school.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <p>
+      <strong>The real rule:</strong> One project beats ten tutorials. Ship something real every phase — even broken, even small.<br>
+      <strong>The trap to avoid:</strong> Tutorial hell. After 20% of a course, build something. Don't wait for permission to start.<br>
+      <strong>Your unfair advantage:</strong> You're already deploying real software at 16. Most people starting AI/ML don't know how to ship. You do.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  function toggle(phase) {
+    phase.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
