@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO: Descriptive title with location keyword for local search -->
+  <title>The Waffle Villa — Premium Waffles, Pancakes & Shakes in Washim</title>
+
+  <!-- SEO: Meta description for search engine snippets -->
+  <meta name="description"
+    content="The Waffle Villa brings artisan waffles, pancakes, shakes and desserts to Washim, Maharashtra. Grand opening March 31, 2026 at Maharatha Complex.">
+
+  <!-- OG Tags: WhatsApp & Instagram link previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Waffle Villa — Washim's Premium Dessert Destination">
+  <meta property="og:description"
+    content="Artisan waffles, pancakes & shakes crafted to satisfy your sweetest cravings. Opening March 31, 2026.">
+  <meta property="og:url" content="https://thewafflevilla.in">
+  <meta property="og:image" content="https://thewafflevilla.in/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:site_name" content="The Waffle Villa">
+
+  <!-- Twitter/X card fallback -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Waffle Villa — Washim">
+  <meta name="twitter:description" content="Artisan waffles, pancakes & shakes. Opening March 31, 2026.">
+  <meta name="twitter:image" content="https://thewafflevilla.in/og-cover.jpg">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://thewafflevilla.in">
+
+  <!-- Preconnect for font performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #C9922A;
+      --gold-light: #E8B84B;
+      --gold-pale: #F5DFA0;
+      --brown: #1A0F05;
+      --brown-mid: #2D1A08;
+      --brown-light: #4A2E10;
+      --cream: #F9F0DC;
+      --red: #C0392B;
+      --white: #FEFEFE;
+      /* a11y: Adding focus-ring color for keyboard navigation */
+      --focus-ring: #E8B84B;
+    }
+
+    /* a11y: Visible focus ring for keyboard users, hidden for mouse */
+    :focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--brown);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── NOISE TEXTURE ───
+     Performance: will-change:transform promotes to GPU layer, preventing
+     repaints when content scrolls beneath it. pointer-events:none ensures
+     no hit-test cost. */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+      will-change: transform;
+    }
+
+    /* ─── SKIP LINK (a11y) ─── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--gold);
+      color: var(--brown);
+      padding: 0.6rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 200;
+      text-decoration: none;
+      border-radius: 0 0 4px 4px;
+      transition: top 0.2s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* ─── NAV ─── */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .site-nav {
+      padding: 1.4rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(26, 15, 5, 0.95), transparent);
+      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+    }
+
+    /* Nav solidifies on scroll — JS toggles .scrolled class */
+    .site-header.scrolled .site-nav {
+      background: rgba(26, 15, 5, 0.97);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      padding: 0.9rem 2.5rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--gold-light);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      position: relative;
+    }
+
+    /* Micro-interaction: underline slides in from left on hover */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--gold-light);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+      color: var(--gold-light);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    
+  /* ─── 3D HERO CANVAS ─── */
+  #hero-canvas {
+    position: absolute;
+    inset: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none; will-change: transform;
+  }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201, 146, 42, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(192, 57, 43, 0.08) 0%, transparent 60%),
+        var(--brown);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      border: 1px solid rgba(201, 146, 42, 0.4);
+      color: var(--gold-light);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 0.4rem 1.2rem;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 12vw, 9rem);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      animation: fadeUp 0.9s 0.1s ease both;
+      /* Gold shimmer: background-clip text with animated gradient */
+      background: linear-gradient(105deg,
+          var(--cream) 0%,
+          var(--cream) 35%,
+          var(--gold-light) 50%,
+          var(--cream) 65%,
+          var(--cream) 100%);
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeUp 0.9s 0.1s ease both, shimmer 6s 1.5s ease-in-out infinite;
+    }
+
+    .hero-title .the {
+      font-size: 0.35em;
+      font-weight: 400;
+      font-style: italic;
+      display: block;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      -webkit-text-fill-color: var(--gold);
+      margin-bottom: 0.2em;
+    }
+
+    .hero-title .villa {
+      color: var(--gold-light);
+      -webkit-text-fill-color: var(--gold-light);
+      display: block;
+    }
+
+    .hero-divider {
+      width: 6rem;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 2rem auto;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      font-weight: 300;
+      font-style: italic;
+      /* a11y: Bumped opacity from 0.75 → 0.82 for WCAG AA on dark bg */
+      color: rgba(249, 240, 220, 0.82);
+      letter-spacing: 0.05em;
+      animation: fadeUp 1s 0.3s ease both;
+    }
+
+    /* ─── COUNTDOWN ─── */
+    .countdown-section {
+      position: relative;
+      background: var(--brown-mid);
+      border-top: 1px solid rgba(201, 146, 42, 0.2);
+      border-bottom: 1px solid rgba(201, 146, 42, 0.2);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .countdown-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2.5rem;
+    }
+
+    .countdown-grid {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 90px;
+    }
+
+    .countdown-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--gold-light);
+      /* Micro-interaction: digits animate on value change via JS class */
+      transition: color 0.3s, transform 0.25s ease;
+    }
+
+    .countdown-num.tick {
+      transform: scale(1.08);
+    }
+
+    .countdown-unit {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      /* a11y: Bumped from 0.4 → 0.55 for better readability */
+      color: rgba(249, 240, 220, 0.55);
+      margin-top: 0.5rem;
+    }
+
+    .countdown-sep {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--gold);
+      opacity: 0.4;
+      align-self: flex-start;
+      padding-top: 0.5rem;
+    }
+
+    .opening-date {
+      margin-top: 2.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      /* a11y: Bumped from 0.5 → 0.65 */
+      color: rgba(249, 240, 220, 0.65);
+    }
+
+    .opening-date strong {
+      color: var(--gold-light);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* Post-opening: "We're Open!" state replaces countdown */
+    .open-now-msg {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--gold-light);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .open-now-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: rgba(249, 240, 220, 0.7);
+      margin-top: 1rem;
+      animation: fadeUp 0.9s 0.15s ease both;
+    }
+
+    .open-now-cta {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--brown);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 1rem 2.5rem;
+      text-decoration: none;
+      margin-top: 2rem;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .open-now-cta:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(201, 146, 42, 0.25);
+    }
+
+    /* ─── MENU ─── */
+    .section {
+      padding: 7rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      /* a11y: Bumped from 0.55 → 0.68 */
+      color: rgba(249, 240, 220, 0.68);
+      margin-bottom: 4rem;
+      max-width: 500px;
+    }
+
+    .menu-category {
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(201, 146, 42, 0.18);
+      overflow: hidden;
+    }
+
+    .cat-header {
+      background: rgba(201, 146, 42, 0.1);
+      border-bottom: 1px solid rgba(201, 146, 42, 0.2);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .cat-icon {
+      font-size: 1.2rem;
+    }
+
+    .cat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      letter-spacing: 0.05em;
+    }
+
+    .price-header-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 1.5rem;
+      background: rgba(201, 146, 42, 0.05);
+      border-bottom: 1px solid rgba(201, 146, 42, 0.1);
+    }
+
+    .price-cols {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .price-cols span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      min-width: 45px;
+      text-align: right;
+    }
+
+    .menu-rows {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .menu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid rgba(249, 240, 220, 0.04);
+      font-size: 0.88rem;
+      /* a11y: Bumped from 0.8 → 0.85 */
+      color: rgba(249, 240, 220, 0.85);
+      transition: background 0.3s ease, padding-left 0.3s ease;
+      gap: 1rem;
+    }
+
+    .menu-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Micro-interaction: subtle indent + highlight on hover */
+    .menu-row:hover {
+      background: rgba(201, 146, 42, 0.08);
+      padding-left: 1.8rem;
+    }
+
+    .menu-row.two,
+    .menu-row.three {
+      display: grid;
+    }
+
+    .menu-row.two {
+      grid-template-columns: 1fr 45px 45px;
+    }
+
+    .menu-row.three {
+      grid-template-columns: 1fr 45px 45px 45px;
+    }
+
+    .menu-row small {
+      font-size: 0.7em;
+      opacity: 0.6;
+    }
+
+    .price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      background: var(--brown-mid);
+      border-top: 1px solid rgba(201, 146, 42, 0.12);
+      border-bottom: 1px solid rgba(201, 146, 42, 0.12);
+      padding: 7rem 2rem;
+    }
+
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .about-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.3;
+      color: var(--gold-pale);
+    }
+
+    .about-quote .highlight {
+      color: var(--gold-light);
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .about-text {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      /* a11y: Bumped from 0.65 → 0.75 */
+      color: rgba(249, 240, 220, 0.75);
+    }
+
+    .about-text p+p {
+      margin-top: 1.2rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      list-style: none;
+    }
+
+    .tag {
+      border: 1px solid rgba(201, 146, 42, 0.35);
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .tag:hover {
+      background: rgba(201, 146, 42, 0.15);
+      color: var(--gold-light);
+    }
+
+    /* ─── OFFERS ─── */
+  .offers-section {
+    background: var(--brown-mid);
+    border-top: 1px solid rgba(201,146,42,0.12);
+    border-bottom: 1px solid rgba(201,146,42,0.12);
+  }
+
+  .offer-card {
+    background: var(--brown);
+    border: 1px solid rgba(201,146,42,0.25);
+    padding: 3rem 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .offer-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(201,146,42,0.6);
+  }
+
+  .offer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .offer-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+  }
+
+  .urgency-badge {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    margin-bottom: 2rem;
+    border-radius: 2px;
+  }
+
+  /* ─── CONTACT ─── */
+    .contact-inner {
+      padding: 7rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .contact-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-info-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .contact-info-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--cream);
+    }
+
+    .contact-info-value a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .contact-info-value a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--gold-light);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+
+    .contact-info-value a:hover {
+      color: var(--gold-light);
+    }
+
+    .contact-info-value a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--brown);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 1rem 2.5rem;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Micro-interaction: lift + glow on hover */
+    .cta-btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(201, 146, 42, 0.3);
+    }
+
+    .cta-btn:active {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 146, 42, 0.2);
+    }
+
+    .map-placeholder {
+      background: var(--brown-mid);
+      border: 1px solid rgba(201, 146, 42, 0.2);
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      /* a11y: bumped from 0.4 → 0.55 */
+      color: rgba(249, 240, 220, 0.55);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      transition: border-color 0.3s;
+    }
+
+    .map-placeholder:hover {
+      border-color: rgba(201, 146, 42, 0.4);
+    }
+
+    .map-icon {
+      font-size: 2.5rem;
+    }
+
+    .map-address {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      line-height: 1.6;
+      color: rgba(249, 240, 220, 0.6);
+    }
+
+    .map-link {
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .map-link:hover {
+      color: var(--gold-light);
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      background: #110A03;
+      border-top: 1px solid rgba(201, 146, 42, 0.15);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: rgba(249, 240, 220, 0.45);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-social a {
+      /* a11y: Bumped from 0.4 → 0.55 */
+      color: rgba(249, 240, 220, 0.55);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .footer-social a:hover {
+      color: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    .footer-copy {
+      font-size: 0.7rem;
+      color: rgba(249, 240, 220, 0.25);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── GRAND OPENING BANNER ─── */
+    .opening-banner {
+      background: var(--red);
+      text-align: center;
+      padding: 0.6rem 1rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 500;
+      position: relative;
+      z-index: 101;
+    }
+
+    .opening-banner span {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .opening-banner strong {
+      color: #fff;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Gold shimmer sweep across hero title */
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: -50% 50%;
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Staggered menu-row cascade — each row gets a delay via JS inline style */
+    .menu-row.row-reveal {
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .menu-row.row-reveal.row-visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+
+
+    /* ─── MOBILE HAMBURGER MENU ─── */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+      z-index: 201;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--gold-light);
+      border-radius: 2px;
+      transition: transform 0.35s ease, opacity 0.25s ease;
+    }
+
+    /* Animate to X when open */
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile drawer overlay */
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(26, 15, 5, 0.97);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .mobile-drawer.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-drawer a {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--cream);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease, color 0.3s ease;
+    }
+
+    .mobile-drawer.open a {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .mobile-drawer.open a:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+
+    .mobile-drawer.open a:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+
+    .mobile-drawer.open a:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+
+    .mobile-drawer.open a:nth-child(4) {
+      transition-delay: 0.4s;
+    }
+
+    .mobile-drawer a:hover {
+      color: var(--gold-light);
+    }
+
+    /* ─── WAFFLE PATTERN ─── */
+    .waffle-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.025;
+      background-image:
+        repeating-linear-gradient(0deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%),
+        repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* Reduced-motion: respect user OS preference */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 700px) {
+      .site-nav {
+        padding: 1rem 1.2rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-drawer {
+        display: flex;
+      }
+
+      .about-inner {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .contact-inner {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 5rem 1.5rem;
+      }
+
+      .countdown-sep {
+        display: none;
+      }
+
+      .hero {
+        padding: 8rem 1.5rem 4rem;
+      }
+
+      .menu-row {
+        padding: 0.9rem 1.2rem;
+        font-size: 0.85rem;
+      }
+
+      .menu-row:hover {
+        padding-left: 1.2rem;
+      }
+
+      .cat-header {
+        padding: 0.9rem 1.2rem;
+      }
+
+      .section {
+        padding: 5rem 1.2rem;
+      }
+
+      .offer-card {
+        padding: 2.5rem 1.5rem;
+      }
+
+      .map-placeholder {
+        height: 220px;
+      }
+
+      .contact-info-item {
+        margin-bottom: 1.8rem;
+      }
+
+      .cta-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .site-header.scrolled .site-nav {
+        padding: 0.7rem 1.2rem;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- a11y: Skip-to-content link for keyboard/screen-reader users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ANNOUNCEMENT BANNER
+     Semantic: role="banner" is implicit on <header>, using a dedicated
+     div with role="status" so screen readers announce it as live info -->
+  <div class="opening-banner" role="status" aria-label="Grand opening announcement">
+    🧇 <strong>Grand Opening — 31st March 2026</strong> <span>· Maharatha Complex, Washim</span>
+  </div>
+
+  <!-- NAV — Semantic: proper <header> + <nav> with aria-label -->
+  <header class="site-header">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#" class="nav-brand" aria-label="The Waffle Villa — Home">The Waffle Villa</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#offers">Offers</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <!-- Hamburger button: visible only on mobile -->
+      <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- Mobile drawer: full-screen nav overlay -->
+    <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation">
+      <a href="#about">About</a>
+      <a href="#menu">Menu</a>
+      <a href="#offers">Offers</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT — Semantic: all page content in <main> -->
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero" aria-label="Welcome">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="waffle-bg" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <div class="hero-badge">Now Opening in Washim</div>
+
+        <h1 class="hero-title">
+          <span class="the">The</span>
+          Waffle<br>
+          <span class="villa">Villa</span>
+        </h1>
+
+        <div class="hero-divider" aria-hidden="true"></div>
+
+        <p class="hero-tagline">Where Sweet Cravings Meet Their Match</p>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN
+       Logic: JS replaces this content with "We're Open!" after target date -->
+    <section class="countdown-section" aria-label="Opening countdown" id="countdown-section">
+      <p class="countdown-label" id="countdown-label">Opening in</p>
+      <div class="countdown-grid" id="countdown-grid" role="timer" aria-live="off" aria-atomic="true">
+        <div class="countdown-item">
+          <span class="countdown-num" id="days" aria-label="Days">00</span>
+          <span class="countdown-unit">Days</span>
+        </div>
+        <span class="countdown-sep" aria-hidden="true">:</span>
+        <div class="countdown-item">
+          <span class="countdown-num" id="hours" aria-label="Hours">00</span>
+          <span class="countdown-unit">Hours</span>
+        </div>
+        <span class="countdown-sep" aria-hidden="true">:</span>
+        <div class="countdown-item">
+          <span class="countdown-num" id="minutes" aria-label="Minutes">00</span>
+          <span class="countdown-unit">Minutes</span>
+        </div>
+        <span class="countdown-sep" aria-hidden="true">:</span>
+        <div class="countdown-item">
+          <span class="countdown-num" id="seconds" aria-label="Seconds">00</span>
+          <span class="countdown-unit">Seconds</span>
+        </div>
+      </div>
+      <p class="opening-date">Opening ceremony — <strong>31st March 2026</strong></p>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="about-section" aria-labelledby="about-heading">
+      <div class="about-inner">
+        <blockquote class="about-quote reveal">
+          "Your waffle,<br>our <span class="highlight">muse.</span>"
+        </blockquote>
+        <div class="about-text reveal">
+          <h2 id="about-heading" class="section-label" style="margin-bottom:1.5rem;">Our Story</h2>
+          <p>The Waffle Villa was born from a simple belief — that desserts aren't just food, they're a moment. A pause
+            from the ordinary. A reason to smile for no reason at all.</p>
+          <p>Located in the heart of Washim, we're bringing something the city hasn't tasted before. Come for the
+            waffles, stay for the feeling.</p>
+          <ul class="tag-row" role="list" aria-label="Specialities">
+            <li class="tag">Waffles</li>
+            <li class="tag">Ice Cream</li>
+            <li class="tag">Pancakes</li>
+            <li class="tag">Shakes</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU — Semantic: proper <section> with heading hierarchy -->
+    <section id="menu" aria-labelledby="menu-heading">
+      <div class="section">
+        <p class="section-label reveal">Our Menu</p>
+        <h2 class="section-title reveal" id="menu-heading">Made to Indulge</h2>
+        <p class="section-sub reveal">Every bite crafted to satisfy the deepest sweet cravings.</p>
+
+        <!-- VILLA SPECIALITY -->
+        <article class="menu-category reveal">
+          <div class="cat-header">
+            <span class="cat-icon" aria-hidden="true">⭐</span>
+            <h3 class="cat-title">Villa Speciality</h3>
+          </div>
+          <div class="menu-rows" role="list">
+            <div class="menu-row" role="listitem"><span>Choco Waffles</span><span class="price">₹300</span></div>
+            <div class="menu-row" role="listitem"><span>Lotus Biscof Pancake <small>(18 pcs)</small></span><span
+                class="price">₹260</span></div>
+            <div class="menu-row" role="listitem"><span>Brownie Shake</span><span class="price">₹200</span></div>
+          </div>
+        </article>
+
+        <!-- STICK WAFFLES -->
+        <article class="menu-category reveal">
+          <div class="cat-header">
+            <span class="cat-icon" aria-hidden="true">🍫</span>
+            <h3 class="cat-title">Stick Waffles</h3>
+          </div>
+          <div class="price-header-row" role="row" aria-hidden="true">
+            <span></span>
+            <span class="price-cols"><span>Popsi</span><span>Candy</span><span>Cone</span></span>
+          </div>
+          <div class="menu-row three" role="listitem"><span>Dark Chocolate</span><span class="price">70</span><span
+              class="price">80</span><span class="price">90</span></div>
+          <div class="menu-row three" role="listitem"><span>White Chocolate</span><span class="price">70</span><span
+              class="price">80</span><span class="price">90</span></div>
+          <div class="menu-row three" role="listitem"><span>Milk Chocolate</span><span class="price">70</span><span
+              class="price">80</span><span class="price">90</span></div>
+          <div class="menu-row three" role="listitem"><span>Triple Chocolate</span><span class="price">80</span><span
+              class="price">90</span><span class="price">100</span></div>
+          <div class="menu-row three" role="listitem"><span>KitKat Chocolate</span><span class="price">80</span><span
+              class="price">90</span><span class="price">100</span></div>
+          <div class="menu-row three" role="listitem"><span>Oreo Chocolate</span><span class="price">80</span><span
+              class="price">90</span><span class="price">100</span></div>
+          <div class="menu-row three" role="listitem"><span>Red Velvet</span><span class="price">90</span><span
+              class="price">100</span><span class="price">100</span></div>
+          <div class="menu-row three" role="listitem"><span>Strawberry</span><span class="price">80</span><span
+              class="price">90</span><span class="price">100</span></div>
+          <div class="menu-row three" role="listitem"><span>Almond Milk</span><span class="price">90</span><span
+              class="price">100</span><span class="price">110</span></div>
+          <div class="menu-row three" role="listitem"><span>Nutella</span><span class="price">90</span><span
+              class="price">100</span><span class="price">110</span></div>
+          <div class="menu-row three" role="listitem"><span>Biscoff</span><span class="price">100</span><span
+              class="price">110</span><span class="price">110</span></div>
+          <div class="menu-row three" role="listitem"><span>Kunfa Pistachio</span><span class="price">100</span><span
+              class="price">110</span><span class="price">110</span></div>
+        </article>
+
+        <!-- CONE WAFFLES -->
+        <article class="menu-category reveal">
+          <div class="cat-header">
+            <span class="cat-icon" aria-hidden="true">🧇</span>
+            <h3 class="cat-title">Cone Waffles</h3>
+          </div>
+          <div class="menu-rows" role="list">
+            <div class="menu-row" role="listitem"><span>Naughty Nutella Waffle</span><span class="price">₹120</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>Dark Chocolate Waffle</span><span class="price">₹100</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>White Chocolate Waffle</span><span class="price">₹100</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>Triple Chocolate Waffle</span><span class="price">₹100</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>Chocolate Overloaded</span><span class="price">₹110</span></div>
+            <div class="menu-row" role="listitem"><span>KitKat Crunchy White</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>KitKat Crunchy Dark</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Red Velvet White</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Red Velvet Dark</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Oreo White Chocolate</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Oreo Dark Chocolate</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Blueberry Waffle</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Strawberry Waffle</span><span class="price">₹110</span></div>
+            <div class="menu-row" role="listitem"><span>Almond Chocolate Waffle</span><span class="price">₹150</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>Kiki &amp; Oreo Waffle</span><span class="price">₹160</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>Kunfa Pistachio</span><span class="price">₹160</span></div>
+            <div class="menu-row" role="listitem"><span>Lotus Biscof</span><span class="price">₹160</span></div>
+          </div>
+        </article>
+
+        <!-- ICE CREAM WAFFLES -->
+        <article class="menu-category reveal">
+          <div class="cat-header">
+            <span class="cat-icon" aria-hidden="true">🍨</span>
+            <h3 class="cat-title">Ice Cream Waffles</h3>
+          </div>
+          <div class="price-header-row" role="row" aria-hidden="true">
+            <span></span>
+            <span class="price-cols"><span>Small</span><span>Large</span></span>
+          </div>
+          <div class="menu-row two" role="listitem"><span>Butterscotch Waffle</span><span class="price">90</span><span
+              class="price">130</span></div>
+          <div class="menu-row two" role="listitem"><span>Vanilla Waffle</span><span class="price">90</span><span
+              class="price">130</span></div>
+          <div class="menu-row two" role="listitem"><span>Strawberry Waffle</span><span class="price">90</span><span
+              class="price">130</span></div>
+          <div class="menu-row two" role="listitem"><span>Choco Bar Waffle</span><span class="price">90</span><span
+              class="price">130</span></div>
+          <div class="menu-row two" role="listitem"><span>Choco Nut Bar Waffle</span><span class="price">110</span><span
+              class="price">160</span></div>
+          <div class="menu-row two" role="listitem"><span>Kaju Kishmish Waffle</span><span class="price">110</span><span
+              class="price">160</span></div>
+          <div class="menu-row two" role="listitem"><span>Choco Crunch</span><span class="price">90</span><span
+              class="price">130</span></div>
+        </article>
+
+        <!-- PANCAKES -->
+        <article class="menu-category reveal">
+          <div class="cat-header">
+            <span class="cat-icon" aria-hidden="true">🥞</span>
+            <h3 class="cat-title">Pancakes</h3>
+          </div>
+          <div class="price-header-row" role="row" aria-hidden="true">
+            <span></span>
+            <span class="price-cols"><span>6 pcs</span><span>12 pcs</span></span>
+          </div>
+          <div class="menu-row two" role="listitem"><span>Dark Chocolate</span><span class="price">80</span><span
+              class="price">115</span></div>
+          <div class="menu-row two" role="listitem"><span>White Chocolate</span><span class="price">80</span><span
+              class="price">115</span></div>
+          <div class="menu-row two" role="listitem"><span>Triple Chocolate</span><span class="price">80</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>Chocolate Overloaded</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>KitKat Crunchy White</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>KitKat Crunchy Dark</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>Red Velvet White</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>Red Velvet Dark</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>Oreo White Chocolate</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>Oreo Dark Chocolate</span><span class="price">90</span><span
+              class="price">120</span></div>
+          <div class="menu-row two" role="listitem"><span>Naughty Nutella</span><span class="price">120</span><span
+              class="price">150</span></div>
+          <div class="menu-row two" role="listitem"><span>Kunfa Pistachio</span><span class="price">130</span><span
+              class="price">190</span></div>
+        </article>
+
+        <!-- BEVERAGES -->
+        <article class="menu-category reveal">
+          <div class="cat-header">
+            <span class="cat-icon" aria-hidden="true">🥤</span>
+            <h3 class="cat-title">Beverages</h3>
+          </div>
+          <div class="menu-rows" role="list">
+            <div class="menu-row" role="listitem"><span>Vanilla Shake</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Chocolate Shake</span><span class="price">₹130</span></div>
+            <div class="menu-row" role="listitem"><span>Strawberry Shake</span><span class="price">₹140</span></div>
+            <div class="menu-row" role="listitem"><span>KitKat Shake</span><span class="price">₹140</span></div>
+            <div class="menu-row" role="listitem"><span>Cold Coffee</span><span class="price">₹70</span></div>
+            <div class="menu-row" role="listitem"><span>Oreo Cold Coffee</span><span class="price">₹90</span></div>
+            <div class="menu-row" role="listitem"><span>Cold Coffee With Ice Cream</span><span class="price">₹100</span>
+            </div>
+            <div class="menu-row" role="listitem"><span>Masala Chai</span><span class="price">₹25</span></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- OFFERS -->
+  <section id="offers" class="offers-section" aria-labelledby="offers-heading">
+    <div class="section" style="text-align: center;">
+      <p class="section-label reveal">Exclusive Deals</p>
+      <h2 class="section-title reveal" id="offers-heading">Opening Day Specials</h2>
+      <p class="section-sub reveal" style="margin: 0 auto 3rem;">Ready just for you at our grand opening.</p>
+      
+      <div class="offer-card reveal">
+        <h3 class="offer-title">Waffle + Shake Combo</h3>
+        <p class="offer-price">₹149</p>
+        <div class="urgency-badge">First 50 Customers Get 20% Off — Opening Day Only · March 31</div>
+        <br>
+        <a href="https://wa.me/919373951796?text=Hi!%20I%20want%20the%20Opening%20Day%20Combo%20offer%20%F0%9F%A7%87" class="cta-btn" target="_blank" rel="noopener noreferrer" aria-label="Order Combo on WhatsApp">Order Combo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+    <section id="contact" aria-labelledby="contact-heading">
+      <div class="contact-inner">
+        <div class="reveal">
+          <p class="section-label">Find Us</p>
+          <h2 class="section-title" id="contact-heading"
+            style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 2.5rem;">Come Say Hello</h2>
+
+          <address style="font-style:normal;">
+            <div class="contact-info-item">
+              <span class="contact-info-label">Phone</span>
+              <span class="contact-info-value">
+                <a href="tel:+919373951796" aria-label="Call us at +91 93739 51796">+91 93739 51796</a>
+              </span>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="contact-info-label">Location</span>
+              <span class="contact-info-value">Maharatha Complex, Washim<br>Maharashtra, India</span>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="contact-info-label">Instagram</span>
+              <span class="contact-info-value">
+                <a href="https://instagram.com/waffle_villa.01" target="_blank" rel="noopener noreferrer"
+                  aria-label="Follow us on Instagram @waffle_villa.01">@waffle_villa.01</a>
+              </span>
+            </div>
+          </address>
+
+          <a href="https://wa.me/919373951796?text=Hi!%20I%20want%20to%20know%20more%20about%20The%20Waffle%20Villa%20%F0%9F%A7%87"
+            class="cta-btn" target="_blank" rel="noopener noreferrer" aria-label="Order on WhatsApp">
+            Order on WhatsApp
+          </a>
+        </div>
+
+        <div class="reveal">
+          <a href="https://maps.google.com/?q=Maharatha+Complex+Washim+Maharashtra" 
+             target="_blank" rel="noopener noreferrer"
+             class="map-placeholder" style="display:flex; text-decoration:none; cursor:pointer;" 
+             aria-label="Open location in Google Maps">
+            <span class="map-icon" aria-hidden="true">📍</span>
+            <p class="map-address">Maharatha Complex<br>Washim, Maharashtra</p>
+            <span class="map-link">Open in Google Maps →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+
+
+  <!-- GAMES TEASER -->
+  <section style="background: var(--brown-mid); border-top: 1px solid rgba(201,146,42,0.15); padding: 4rem 2rem; text-align:center;">
+    <div style="max-width:600px; margin:0 auto;">
+      <p style="font-size:0.65rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">While You Wait</p>
+      <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.8rem); margin-bottom:1rem;">Play Mini Games 🎮</h2>
+      <p style="font-family:'Cormorant Garamond',serif; font-style:italic; color:rgba(249,240,220,0.65); font-size:1.1rem; margin-bottom:2rem;">Stack waffles, catch shakes, match desserts — pass the time while your order gets ready.</p>
+      <a href="games.html" style="display:inline-block; background:var(--gold); color:var(--brown); font-size:0.85rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; padding:1rem 2.5rem; text-decoration:none; transition: background 0.3s, transform 0.3s;" onmouseover="this.style.background='#E8B84B'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#C9922A'; this.style.transform='translateY(0)'">Enter Game Zone →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER — Semantic: <footer> -->
+  <footer class="site-footer">
+    <div class="footer-brand">The Waffle Villa</div>
+    <p class="footer-tagline">Where Sweet Cravings Meet Their Match</p>
+    <nav class="footer-social" aria-label="Social media links">
+      <a href="https://instagram.com/waffle_villa.01" target="_blank" rel="noopener noreferrer"
+        aria-label="Instagram">Instagram</a>
+      <a href="https://wa.me/919373951796" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">WhatsApp</a>
+      <a href="games.html" aria-label="Mini Games">🎮 Games</a>
+    </nav>
+    <p class="footer-copy">© 2026 The Waffle Villa · Washim, Maharashtra</p>
+  </footer>
+
+  <script>
+    /* ─── COUNTDOWN ───
+       Edge case: When target date passes, the entire countdown section
+       transforms into a "We're Now Open!" message with a CTA instead of
+       freezing on 00:00:00:00. The interval auto-clears to stop ticking. */
+
+    (function () {
+      const TARGET = new Date('2026-03-31T00:00:00+05:30').getTime();
+      let intervalId = null;
+
+      function showOpenMessage() {
+        const section = document.getElementById('countdown-section');
+        if (!section) return;
+
+        // Also update the top banner to reflect "Now Open"
+        const banner = document.querySelector('.opening-banner');
+        if (banner) {
+          banner.innerHTML = '🧇 <strong>We Are Now Open!</strong> <span>· Maharatha Complex, Washim</span>';
+        }
+
+        section.innerHTML = `
+        <p class="open-now-msg">🎉 We're Now Open!</p>
+        <p class="open-now-sub">Visit us at Maharatha Complex, Washim</p>
+        <a href="https://wa.me/919373951796?text=Hi!%20I'd%20like%20to%20place%20an%20order%20%F0%9F%A7%87"
+           class="open-now-cta" target="_blank" rel="noopener noreferrer"
+           aria-label="Order on WhatsApp">Order Now on WhatsApp</a>
+      `;
+      }
+
+      /* Micro-interaction: brief scale pulse on digit change */
+      function animateDigit(el) {
+        el.classList.add('tick');
+        setTimeout(() => el.classList.remove('tick'), 200);
+      }
+
+      function updateCountdown() {
+        const now = Date.now();
+        const diff = TARGET - now;
+
+        if (diff <= 0) {
+          clearInterval(intervalId);
+          showOpenMessage();
+          return;
+        }
+
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        const dStr = String(d).padStart(2, '0');
+        const hStr = String(h).padStart(2, '0');
+        const mStr = String(m).padStart(2, '0');
+        const sStr = String(s).padStart(2, '0');
+
+        if (daysEl.textContent !== dStr) { daysEl.textContent = dStr; animateDigit(daysEl); }
+        if (hoursEl.textContent !== hStr) { hoursEl.textContent = hStr; animateDigit(hoursEl); }
+        if (minutesEl.textContent !== mStr) { minutesEl.textContent = mStr; animateDigit(minutesEl); }
+        if (secondsEl.textContent !== sStr) { secondsEl.textContent = sStr; animateDigit(secondsEl); }
+      }
+
+      updateCountdown();
+      intervalId = setInterval(updateCountdown, 1000);
+    })();
+
+    /* ─── SCROLL REVEAL ─── */
+    (function () {
+      const reveals = document.querySelectorAll('.reveal');
+      if (!reveals.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => entry.target.classList.add('visible'), i * 80);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      reveals.forEach(el => observer.observe(el));
+    })();
+
+    /* ─── STAGGERED MENU ROW REVEALS ───
+       Each .menu-row cascades in with a 40ms stagger for a
+       polished "items loading in" feel. */
+    (function () {
+      const rows = document.querySelectorAll('.menu-row');
+      if (!rows.length) return;
+
+      rows.forEach(row => row.classList.add('row-reveal'));
+
+      const rowObserver = new IntersectionObserver((entries) => {
+        /* Collect all newly-visible rows, sort by DOM order, stagger */
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => entry.target.classList.add('row-visible'), i * 40);
+          rowObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+      rows.forEach(row => rowObserver.observe(row));
+    })();
+
+    /* ─── NAV SOLIDIFY ON SCROLL ───
+       Adds .scrolled class to header after scrolling 80px.
+       Uses passive listener for zero scroll-jank. */
+    (function () {
+      const header = document.querySelector('.site-header');
+      if (!header) return;
+      let ticking = false;
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            header.classList.toggle('scrolled', window.scrollY > 80);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
+
+    /* ─── MOBILE HAMBURGER TOGGLE ─── */
+    (function () {
+      const btn = document.getElementById('hamburger-btn');
+      const drawer = document.getElementById('mobile-drawer');
+      if (!btn || !drawer) return;
+
+      btn.addEventListener('click', () => {
+        const isOpen = drawer.classList.toggle('open');
+        btn.classList.toggle('active');
+        btn.setAttribute('aria-expanded', isOpen);
+        btn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        /* Prevent body scroll when drawer is open */
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+
+      /* Close drawer when a link is clicked */
+      drawer.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          drawer.classList.remove('open');
+          btn.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-label', 'Open menu');
+          document.body.style.overflow = '';
+        });
+      });
+    })();
+
+    /* ─── THREE.JS 3D HERO ─── */
+    (function () {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+      const section = canvas.parentElement;
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+      camera.position.set(0, 0, 9);
+      function resize() {
+        const w = section.offsetWidth, h = section.offsetHeight;
+        renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+      }
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+      scene.add(new THREE.AmbientLight(0x3d1f00, 1.4));
+      const pl1 = new THREE.PointLight(0xc9922a, 3, 20); pl1.position.set(4, 5, 6); scene.add(pl1);
+      const pl2 = new THREE.PointLight(0xe8b84b, 1.8, 14); pl2.position.set(-5, -2, 4); scene.add(pl2);
+      const waffleGroup = new THREE.Group();
+      const GRID=6, SP=1.06, OFF=(6-1)*1.06/2;
+      const cellGeo = new THREE.BoxGeometry(0.86,0.86,0.30);
+      for(let r=0;r<GRID;r++) for(let c=0;c<GRID;c++){
+        const dark=(r+c)%2===0;
+        const cell=new THREE.Mesh(cellGeo,new THREE.MeshStandardMaterial({color:dark?0x6b3309:0xb06a18,roughness:dark?0.92:0.58,metalness:dark?0:0.18}));
+        cell.position.set(c*SP-OFF,r*SP-OFF,(Math.random()-0.5)*0.25);
+        cell.userData={baseZ:cell.position.z,phase:Math.random()*Math.PI*2,speed:0.35+Math.random()*0.55};
+        waffleGroup.add(cell);
+      }
+      const ridgeMat=new THREE.MeshStandardMaterial({color:0xc9922a,roughness:0.45,metalness:0.4});
+      for(let i=1;i<GRID;i++){
+        const h=new THREE.Mesh(new THREE.BoxGeometry(GRID*SP+0.2,0.055,0.34),ridgeMat);
+        h.position.set(0,i*SP-OFF-SP/2,0.18); waffleGroup.add(h);
+        const v=new THREE.Mesh(new THREE.BoxGeometry(0.055,GRID*SP+0.2,0.34),ridgeMat);
+        v.position.set(i*SP-OFF-SP/2,0,0.18); waffleGroup.add(v);
+      }
+      waffleGroup.rotation.x=0.36; waffleGroup.rotation.z=0.10; waffleGroup.position.z=-1.5;
+      scene.add(waffleGroup);
+      const particles=[];
+      const pGS=new THREE.SphereGeometry(0.045,6,6), pGB=new THREE.SphereGeometry(0.08,7,7);
+      for(let i=0;i<90;i++){
+        const big=Math.random()>0.7;
+        const p=new THREE.Mesh(big?pGB:pGS,new THREE.MeshStandardMaterial({color:Math.random()>0.5?0xc9922a:0xe8b84b,roughness:0.28,metalness:0.65,transparent:true,opacity:0.55+Math.random()*0.4}));
+        p.position.set((Math.random()-0.5)*16,(Math.random()-0.5)*12+6,(Math.random()-0.5)*5+0.5);
+        p.userData={speed:0.007+Math.random()*0.018,wobble:Math.random()*Math.PI*2,amp:0.003+Math.random()*0.006};
+        scene.add(p); particles.push(p);
+      }
+      let mx=0,my=0,tx=0,ty=0;
+      window.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-0.5)*2;my=(e.clientY/window.innerHeight-0.5)*2;},{passive:true});
+      window.addEventListener('touchmove',e=>{if(!e.touches.length)return;mx=(e.touches[0].clientX/window.innerWidth-0.5)*2;my=(e.touches[0].clientY/window.innerHeight-0.5)*2;},{passive:true});
+      let t=0,rafId;
+      const obs=new IntersectionObserver(en=>{if(en[0].isIntersecting){if(!rafId)loop();}else{cancelAnimationFrame(rafId);rafId=null;}},{threshold:0.01});
+      obs.observe(document.querySelector('.hero'));
+      function loop(){
+        rafId=requestAnimationFrame(loop); t+=0.013;
+        tx+=(mx-tx)*0.045; ty+=(my-ty)*0.045;
+        waffleGroup.rotation.y=tx*0.22; waffleGroup.rotation.x=0.36-ty*0.14;
+        waffleGroup.position.y=Math.sin(t*0.28)*0.18;
+        waffleGroup.children.forEach(c=>{if(c.userData.phase!==undefined)c.position.z=c.userData.baseZ+Math.sin(t*c.userData.speed+c.userData.phase)*0.13;});
+        particles.forEach(p=>{p.position.y-=p.userData.speed;p.position.x+=Math.sin(t*0.9+p.userData.wobble)*p.userData.amp;if(p.position.y<-7){p.position.y=7;p.position.x=(Math.random()-0.5)*16;}});
+        renderer.render(scene,camera);
+      }
+    })();
+
+  </script>
+</body>
+
+</html>

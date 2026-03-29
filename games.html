@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Zone — The Waffle Villa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#C9922A;--gold-l:#E8B84B;--brown:#1A0F05;
+  --brown-mid:#2D1A08;--cream:#F9F0DC;--red:#C0392B;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--brown);color:var(--cream);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh;}
+
+/* NAV */
+.top-bar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(26,15,5,0.97);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(201,146,42,0.2);
+  padding:1rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.top-bar a{color:var(--gold-l);text-decoration:none;font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;}
+.back-btn{
+  display:flex;align-items:center;gap:0.5rem;
+  color:rgba(249,240,220,0.7);text-decoration:none;
+  font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;
+  transition:color 0.2s;
+}
+.back-btn:hover{color:var(--gold-l);}
+
+/* HERO */
+.game-hero{
+  text-align:center;padding:3rem 1.5rem 2rem;
+  background:radial-gradient(ellipse 70% 50% at 50% 30%,rgba(201,146,42,0.1) 0%,transparent 70%);
+}
+.game-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,4rem);font-weight:900;color:var(--gold-l);margin-bottom:0.5rem;}
+.game-hero p{font-size:0.9rem;color:rgba(249,240,220,0.6);letter-spacing:0.05em;}
+
+/* GAME SELECTOR */
+.game-tabs{
+  display:flex;gap:0.5rem;justify-content:center;
+  flex-wrap:wrap;padding:1.5rem 1rem;
+  border-bottom:1px solid rgba(201,146,42,0.15);
+}
+.tab-btn{
+  background:rgba(201,146,42,0.08);
+  border:1px solid rgba(201,146,42,0.25);
+  color:var(--cream);font-family:'DM Sans',sans-serif;
+  font-size:0.8rem;font-weight:500;
+  letter-spacing:0.08em;
+  padding:0.6rem 1.2rem;cursor:pointer;
+  transition:all 0.25s;border-radius:2px;
+}
+.tab-btn:hover{background:rgba(201,146,42,0.18);color:var(--gold-l);}
+.tab-btn.active{background:var(--gold);color:var(--brown);border-color:var(--gold);}
+
+/* GAME AREA */
+.game-area{
+  max-width:520px;margin:0 auto;
+  padding:1.5rem 1rem 4rem;
+}
+.game-panel{display:none;}
+.game-panel.active{display:block;}
+
+/* SHARED GAME STYLES */
+.game-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1rem;
+  background:rgba(201,146,42,0.08);
+  border:1px solid rgba(201,146,42,0.2);
+  padding:0.75rem 1rem;
+}
+.game-score-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem;}
+.game-score-val{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold-l);}
+.game-level-label{text-align:right;}
+
+.game-canvas-wrap{
+  position:relative;
+  background:var(--brown-mid);
+  border:1px solid rgba(201,146,42,0.2);
+  overflow:hidden;
+}
+canvas.game-canvas{display:block;width:100%;touch-action:none;}
+
+.game-btn{
+  display:block;width:100%;
+  background:var(--gold);color:var(--brown);
+  border:none;font-family:'DM Sans',sans-serif;
+  font-size:0.85rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  padding:0.9rem;cursor:pointer;margin-top:0.75rem;
+  transition:background 0.2s,transform 0.2s;
+}
+.game-btn:hover{background:var(--gold-l);transform:translateY(-2px);}
+
+.game-overlay{
+  position:absolute;inset:0;
+  background:rgba(10,5,2,0.88);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:1rem;text-align:center;padding:1.5rem;
+  transition:opacity 0.3s;
+}
+.game-overlay.hidden{display:none;}
+.overlay-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--gold-l);}
+.overlay-sub{font-size:0.85rem;color:rgba(249,240,220,0.65);line-height:1.6;}
+.overlay-score{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);}
+.overlay-btn{
+  background:var(--gold);color:var(--brown);
+  border:none;font-size:0.85rem;font-weight:600;
+  letter-spacing:0.15em;text-transform:uppercase;
+  padding:0.8rem 2rem;cursor:pointer;
+  transition:background 0.2s;
+}
+.overlay-btn:hover{background:var(--gold-l);}
+
+.game-instructions{
+  margin-top:0.75rem;
+  font-size:0.78rem;color:rgba(249,240,220,0.45);
+  text-align:center;line-height:1.6;
+}
+
+/* HIGH SCORE BOARD */
+.score-board{
+  margin-top:1.5rem;
+  border:1px solid rgba(201,146,42,0.15);
+  overflow:hidden;
+}
+.score-board-header{
+  background:rgba(201,146,42,0.08);
+  padding:0.6rem 1rem;
+  font-size:0.65rem;letter-spacing:0.25em;
+  text-transform:uppercase;color:var(--gold);
+  border-bottom:1px solid rgba(201,146,42,0.12);
+}
+.score-row{
+  display:flex;justify-content:space-between;
+  padding:0.5rem 1rem;
+  border-bottom:1px solid rgba(249,240,220,0.04);
+  font-size:0.82rem;color:rgba(249,240,220,0.75);
+}
+.score-row:last-child{border-bottom:none;}
+.score-num{color:var(--gold-l);font-family:'Playfair Display',serif;}
+
+/* FOOTER */
+.game-footer{
+  text-align:center;padding:2rem 1rem;
+  border-top:1px solid rgba(201,146,42,0.12);
+  font-size:0.72rem;color:rgba(249,240,220,0.3);
+  letter-spacing:0.05em;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="index.html">The Waffle Villa</a>
+  <a href="index.html" class="back-btn">← Back to Menu</a>
+</div>
+
+<div class="game-hero">
+  <h1>🎮 Game Zone</h1>
+  <p>Play while your order gets ready · Waffle Villa, Washim</p>
+</div>
+
+<div class="game-tabs">
+  <button class="tab-btn active" onclick="switchGame('stacker')">🧇 Waffle Stacker</button>
+  <button class="tab-btn" onclick="switchGame('catcher')">🥤 Shake Catcher</button>
+  <button class="tab-btn" onclick="switchGame('memory')">🍫 Dessert Match</button>
+</div>
+
+<div class="game-area">
+
+  <!-- ══════════════ GAME 1: WAFFLE STACKER ══════════════ -->
+  <div class="game-panel active" id="panel-stacker">
+    <div class="game-header">
+      <div>
+        <div class="game-score-label">Score</div>
+        <div class="game-score-val" id="stacker-score">0</div>
+      </div>
+      <div class="game-level-label">
+        <div class="game-score-label">Level</div>
+        <div class="game-score-val" id="stacker-level">1</div>
+      </div>
+    </div>
+    <div class="game-canvas-wrap">
+      <canvas class="game-canvas" id="stacker-canvas" width="480" height="520"></canvas>
+      <div class="game-overlay" id="stacker-overlay">
+        <div class="overlay-title">🧇 Waffle Stacker</div>
+        <div class="overlay-sub">Tap or click to drop the waffle!<br>Stack as high as you can.</div>
+        <button class="overlay-btn" onclick="stackerStart()">Start Game</button>
+      </div>
+      <div class="game-overlay hidden" id="stacker-gameover">
+        <div class="overlay-title">Oops! 😅</div>
+        <div class="overlay-sub">Your stack fell!</div>
+        <div class="overlay-score" id="stacker-final">0</div>
+        <div class="overlay-sub">waffles stacked</div>
+        <button class="overlay-btn" onclick="stackerStart()">Try Again</button>
+      </div>
+    </div>
+    <div class="game-instructions">Tap / click / spacebar to drop the waffle at the right moment.</div>
+    <div class="score-board">
+      <div class="score-board-header">🏆 High Scores</div>
+      <div id="stacker-scores"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ GAME 2: SHAKE CATCHER ══════════════ -->
+  <div class="game-panel" id="panel-catcher">
+    <div class="game-header">
+      <div>
+        <div class="game-score-label">Score</div>
+        <div class="game-score-val" id="catcher-score">0</div>
+      </div>
+      <div class="game-level-label">
+        <div class="game-score-label">Lives</div>
+        <div class="game-score-val" id="catcher-lives">❤️❤️❤️</div>
+      </div>
+    </div>
+    <div class="game-canvas-wrap">
+      <canvas class="game-canvas" id="catcher-canvas" width="480" height="520"></canvas>
+      <div class="game-overlay" id="catcher-overlay">
+        <div class="overlay-title">🥤 Shake Catcher</div>
+        <div class="overlay-sub">Catch the ingredients in your cup!<br>Avoid bombs 💣 — they cost a life.</div>
+        <button class="overlay-btn" onclick="catcherStart()">Start Game</button>
+      </div>
+      <div class="game-overlay hidden" id="catcher-gameover">
+        <div class="overlay-title">Game Over! 🥤</div>
+        <div class="overlay-sub">Your shake is empty!</div>
+        <div class="overlay-score" id="catcher-final">0</div>
+        <div class="overlay-sub">ingredients caught</div>
+        <button class="overlay-btn" onclick="catcherStart()">Try Again</button>
+      </div>
+    </div>
+    <div class="game-instructions">Drag / swipe your cup left & right to catch falling ingredients.</div>
+    <div class="score-board">
+      <div class="score-board-header">🏆 High Scores</div>
+      <div id="catcher-scores"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ GAME 3: DESSERT MEMORY ══════════════ -->
+  <div class="game-panel" id="panel-memory">
+    <div class="game-header">
+      <div>
+        <div class="game-score-label">Pairs</div>
+        <div class="game-score-val" id="memory-pairs">0/8</div>
+      </div>
+      <div class="game-level-label">
+        <div class="game-score-label">Moves</div>
+        <div class="game-score-val" id="memory-moves">0</div>
+      </div>
+    </div>
+    <div id="memory-grid" style="
+      display:grid;grid-template-columns:repeat(4,1fr);
+      gap:8px;padding:12px;
+      background:var(--brown-mid);
+      border:1px solid rgba(201,146,42,0.2);
+    "></div>
+    <button class="game-btn" onclick="memoryStart()">🔀 New Game</button>
+    <div class="game-instructions">Tap cards to flip them. Match all 8 dessert pairs!</div>
+    <div class="score-board">
+      <div class="score-board-header">🏆 Best Scores (fewest moves)</div>
+      <div id="memory-scores"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="game-footer">© 2026 The Waffle Villa · Washim, Maharashtra</div>
+
+<script>
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function getScores(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+}
+function saveScore(key, score, lower=false) {
+  let scores = getScores(key);
+  scores.push(score);
+  scores.sort((a,b) => lower ? a-b : b-a);
+  scores = scores.slice(0,5);
+  try { localStorage.setItem(key, JSON.stringify(scores)); } catch {}
+  return scores;
+}
+function renderScores(containerId, scores, suffix='', lower=false) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!scores.length) { el.innerHTML = '<div class="score-row"><span style="opacity:0.4">No scores yet — be the first!</span></div>'; return; }
+  el.innerHTML = scores.map((s,i) => `
+    <div class="score-row">
+      <span>${['🥇','🥈','🥉','4️⃣','5️⃣'][i]} Player ${i+1}</span>
+      <span class="score-num">${s}${suffix}</span>
+    </div>`).join('');
+}
+
+function switchGame(id) {
+  document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// GAME 1: WAFFLE STACKER
+// ══════════════════════════════════════════
+const stackerState = { running: false, raf: null };
+
+function stackerStart() {
+  document.getElementById('stacker-overlay').classList.add('hidden');
+  document.getElementById('stacker-gameover').classList.add('hidden');
+
+  const canvas = document.getElementById('stacker-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const BLOCK_H = 28;
+  const COLORS = ['#b06a18','#c9922a','#7a3e0e','#e8b84b','#8b4513','#d4a017'];
+
+  let score = 0, level = 1;
+  let stack = [];
+  let moving = { x: 0, w: W * 0.55, dir: 1, speed: 3.5 };
+  let gameOver = false;
+
+  // Initial platform
+  stack.push({ x: W*0.1, y: H - BLOCK_H - 20, w: W*0.8, color: '#6b3309' });
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Background
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#0f0602');
+    grad.addColorStop(1, '#1a0f05');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Subtle grid
+    ctx.strokeStyle = 'rgba(201,146,42,0.06)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // Stack
+    stack.forEach((b, i) => {
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(b.x+4, b.y+4, b.w, BLOCK_H);
+
+      // Block
+      ctx.fillStyle = b.color;
+      ctx.fillRect(b.x, b.y, b.w, BLOCK_H);
+
+      // Waffle grid lines on block
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+      ctx.lineWidth = 1.5;
+      const cellW = b.w / Math.max(3, Math.round(b.w/18));
+      for (let cx = b.x + cellW; cx < b.x + b.w; cx += cellW) {
+        ctx.beginPath(); ctx.moveTo(cx, b.y); ctx.lineTo(cx, b.y+BLOCK_H); ctx.stroke();
+      }
+      ctx.beginPath(); ctx.moveTo(b.x, b.y+BLOCK_H/2); ctx.lineTo(b.x+b.w, b.y+BLOCK_H/2); ctx.stroke();
+
+      // Gold top shine
+      ctx.fillStyle = 'rgba(232,184,75,0.25)';
+      ctx.fillRect(b.x, b.y, b.w, 4);
+    });
+
+    // Moving block
+    if (!gameOver) {
+      const my = stack.length > 0 ? stack[stack.length-1].y - BLOCK_H - 4 : H/2;
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillRect(moving.x+4, my+4, moving.w, BLOCK_H);
+      ctx.fillStyle = COLORS[score % COLORS.length];
+      ctx.fillRect(moving.x, my, moving.w, BLOCK_H);
+      ctx.strokeStyle = 'rgba(232,184,75,0.6)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(moving.x, my, moving.w, BLOCK_H);
+
+      // Arrow hint
+      ctx.fillStyle = 'rgba(232,184,75,0.5)';
+      ctx.font = '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('↓  TAP TO DROP  ↓', W/2, my - 12);
+    }
+
+    // Score display
+    ctx.fillStyle = 'rgba(201,146,42,0.9)';
+    ctx.font = 'bold 22px "Playfair Display", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${score} Waffles Stacked`, W/2, 36);
+
+    // Level progress bar
+    ctx.fillStyle = 'rgba(201,146,42,0.15)';
+    ctx.fillRect(20, 50, W-40, 6);
+    ctx.fillStyle = 'rgba(201,146,42,0.7)';
+    ctx.fillRect(20, 50, (W-40)*((score%5)/5), 6);
+  }
+
+  function dropBlock() {
+    if (gameOver) return;
+    const top = stack[stack.length - 1];
+    const my = top.y - BLOCK_H - 4;
+
+    // Overlap calculation
+    const overlapStart = Math.max(moving.x, top.x);
+    const overlapEnd   = Math.min(moving.x + moving.w, top.x + top.w);
+    const overlapW = overlapEnd - overlapStart;
+
+    if (overlapW <= 2) {
+      // Miss — game over
+      gameOver = true;
+      cancelAnimationFrame(stackerState.raf);
+      const scores = saveScore('waffleStacker', score);
+      renderScores('stacker-scores', scores);
+      document.getElementById('stacker-final').textContent = score;
+      document.getElementById('stacker-score').textContent = score;
+      setTimeout(() => document.getElementById('stacker-gameover').classList.remove('hidden'), 600);
+      return;
+    }
+
+    // Perfect bonus
+    const perfect = Math.abs(overlapW - moving.w) < 4;
+
+    stack.push({
+      x: overlapStart,
+      y: my,
+      w: overlapW,
+      color: perfect ? '#e8b84b' : COLORS[score % COLORS.length],
+    });
+
+    score++;
+    if (score % 5 === 0) level++;
+    moving.x = overlapStart;
+    moving.w = perfect ? moving.w : overlapW;
+    moving.speed = 3.5 + level * 0.7;
+
+    document.getElementById('stacker-score').textContent = score;
+    document.getElementById('stacker-level').textContent = level;
+
+    // Scroll view up as stack grows
+    if (stack.length > 12) stack.shift();
+    stack.forEach((b, i) => { b.y = H - BLOCK_H - 20 - i * (BLOCK_H + 4); });
+  }
+
+  function update() {
+    if (gameOver) return;
+    const top = stack[stack.length-1];
+    const my = top.y - BLOCK_H - 4;
+
+    moving.x += moving.dir * moving.speed;
+    if (moving.x + moving.w >= W - 10) { moving.dir = -1; }
+    if (moving.x <= 10) { moving.dir = 1; }
+
+    draw();
+    stackerState.raf = requestAnimationFrame(update);
+  }
+
+  // Input
+  function handleDrop() { dropBlock(); }
+  canvas.onclick = handleDrop;
+  canvas.ontouchstart = e => { e.preventDefault(); handleDrop(); };
+
+  // Keyboard
+  const keyHandler = e => { if (e.code === 'Space') { e.preventDefault(); handleDrop(); }};
+  document.addEventListener('keydown', keyHandler);
+  stackerState._keyHandler = keyHandler;
+
+  stackerState.running = true;
+  update();
+  renderScores('stacker-scores', getScores('waffleStacker'));
+}
+
+// ══════════════════════════════════════════
+// GAME 2: SHAKE CATCHER
+// ══════════════════════════════════════════
+const catcherState = { running: false, raf: null };
+
+function catcherStart() {
+  document.getElementById('catcher-overlay').classList.add('hidden');
+  document.getElementById('catcher-gameover').classList.add('hidden');
+  cancelAnimationFrame(catcherState.raf);
+
+  const canvas = document.getElementById('catcher-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const ITEMS = [
+    {emoji:'🍫',label:'Choco',pts:10},
+    {emoji:'🍓',label:'Berry',pts:8},
+    {emoji:'🍦',label:'Cream',pts:12},
+    {emoji:'🥛',label:'Milk',pts:6},
+    {emoji:'🍮',label:'Caramel',pts:15},
+    {emoji:'🌰',label:'Nutella',pts:20},
+  ];
+
+  let score = 0, lives = 3, gameOver = false;
+  let items = [];
+  let cup = { x: W/2 - 40, w: 80, speed: 0 };
+  let spawnTimer = 0, spawnRate = 80, frame = 0;
+
+  function spawnItem() {
+    const bad = Math.random() < 0.15 + frame*0.0003;
+    items.push({
+      x: 30 + Math.random()*(W-60),
+      y: -30,
+      size: 28 + Math.random()*10,
+      speed: 2 + Math.random()*2 + frame*0.004,
+      bad,
+      emoji: bad ? '💣' : ITEMS[Math.floor(Math.random()*ITEMS.length)].emoji,
+      pts: bad ? 0 : ITEMS[Math.floor(Math.random()*ITEMS.length)].pts,
+      caught: false,
+      flash: 0,
+    });
+  }
+
+  function drawCup(x, y, w) {
+    ctx.save();
+    // Cup body (trapezoid)
+    ctx.beginPath();
+    ctx.moveTo(x + w*0.08, y);
+    ctx.lineTo(x + w*0.92, y);
+    ctx.lineTo(x + w, y + 55);
+    ctx.lineTo(x, y + 55);
+    ctx.closePath();
+
+    const grad = ctx.createLinearGradient(x, y, x+w, y);
+    grad.addColorStop(0,'#8b4513');
+    grad.addColorStop(0.3,'#c9922a');
+    grad.addColorStop(0.7,'#a0631a');
+    grad.addColorStop(1,'#8b4513');
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.strokeStyle = '#e8b84b';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Straw
+    ctx.fillStyle = '#e84040';
+    ctx.fillRect(x + w*0.7, y - 35, 6, 45);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(x + w*0.7, y - 35, 6, 10);
+    ctx.fillStyle = '#e84040';
+    ctx.fillRect(x + w*0.7, y - 15, 6, 10);
+
+    // Cream on top
+    ctx.beginPath();
+    ctx.ellipse(x + w/2, y + 4, w*0.38, 12, 0, 0, Math.PI*2);
+    ctx.fillStyle = '#f4ede0';
+    ctx.fill();
+
+    // Logo on cup
+    ctx.fillStyle = 'rgba(232,184,75,0.8)';
+    ctx.font = `bold 9px DM Sans`;
+    ctx.textAlign = 'center';
+    ctx.fillText('WAFFLE', x + w/2, y + 30);
+    ctx.fillText('VILLA', x + w/2, y + 41);
+    ctx.restore();
+  }
+
+  function draw() {
+    // BG
+    const bg = ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#0f0602'); bg.addColorStop(1,'#1a0f05');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+    // Grid
+    ctx.strokeStyle='rgba(201,146,42,0.05)'; ctx.lineWidth=1;
+    for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+    // Falling items
+    ctx.font = '26px serif';
+    ctx.textAlign = 'center';
+    items.forEach(it => {
+      if (it.flash > 0) {
+        ctx.globalAlpha = it.flash / 10;
+        ctx.fillStyle = it.bad ? '#ff4444' : '#e8b84b';
+        ctx.beginPath();
+        ctx.arc(it.x, it.y, it.size, 0, Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        it.flash--;
+      }
+      ctx.font = `${it.size}px serif`;
+      ctx.fillText(it.emoji, it.x, it.y + it.size*0.4);
+    });
+
+    // Cup
+    const cupY = H - 80;
+    drawCup(cup.x, cupY, cup.w);
+
+    // Score
+    ctx.fillStyle = 'rgba(201,146,42,0.9)';
+    ctx.font = 'bold 20px "Playfair Display"';
+    ctx.textAlign = 'center';
+    ctx.fillText(`Score: ${score}`, W/2, 36);
+
+    // Lives hearts
+    const hearts = ['❤️❤️❤️','❤️❤️🖤','❤️🖤🖤','🖤🖤🖤'][3-lives] || '🖤🖤🖤';
+    ctx.font = '18px serif';
+    ctx.fillText(hearts, W/2, 62);
+  }
+
+  function update() {
+    if (gameOver) return;
+    frame++;
+    spawnTimer++;
+
+    if (spawnTimer >= spawnRate) {
+      spawnItem();
+      spawnTimer = 0;
+      spawnRate = Math.max(28, 80 - frame*0.08);
+    }
+
+    const cupY = H - 80;
+
+    items = items.filter(it => {
+      it.y += it.speed;
+
+      // Collision with cup
+      if (it.y + it.size > cupY && it.y < cupY + 55 &&
+          it.x > cup.x && it.x < cup.x + cup.w) {
+        it.flash = 10;
+        if (it.bad) {
+          lives--;
+          document.getElementById('catcher-lives').textContent = ['❤️❤️❤️','❤️❤️','❤️',''][3-lives]||'';
+          if (lives <= 0) { endCatcher(); return false; }
+        } else {
+          score += it.pts || 10;
+          document.getElementById('catcher-score').textContent = score;
+        }
+        return false;
+      }
+
+      if (it.y > H + 40) {
+        if (!it.bad) { lives--; document.getElementById('catcher-lives').textContent = ['❤️❤️❤️','❤️❤️','❤️',''][3-lives]||''; if(lives<=0){endCatcher();return false;} }
+        return false;
+      }
+      return true;
+    });
+
+    draw();
+    catcherState.raf = requestAnimationFrame(update);
+  }
+
+  function endCatcher() {
+    gameOver = true;
+    cancelAnimationFrame(catcherState.raf);
+    const scores = saveScore('shakeCatcher', score);
+    renderScores('catcher-scores', scores);
+    document.getElementById('catcher-final').textContent = score;
+    setTimeout(() => document.getElementById('catcher-gameover').classList.remove('hidden'), 500);
+  }
+
+  // Mouse
+  canvas.onmousemove = e => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    cup.x = (e.clientX - rect.left) * scaleX - cup.w/2;
+    cup.x = Math.max(0, Math.min(W - cup.w, cup.x));
+  };
+
+  // Touch
+  canvas.ontouchmove = e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    cup.x = (e.touches[0].clientX - rect.left) * scaleX - cup.w/2;
+    cup.x = Math.max(0, Math.min(W - cup.w, cup.x));
+  };
+
+  update();
+  renderScores('catcher-scores', getScores('shakeCatcher'));
+}
+
+// ══════════════════════════════════════════
+// GAME 3: DESSERT MEMORY MATCH
+// ══════════════════════════════════════════
+const DESSERTS = ['🧇','🍫','🥞','🍦','🥤','🍓','🍮','🌰'];
+let memCards = [], memFlipped = [], memPairs = 0, memMoves = 0, memLock = false;
+
+function memoryStart() {
+  memPairs = 0; memMoves = 0; memFlipped = []; memLock = false;
+  document.getElementById('memory-pairs').textContent = '0/8';
+  document.getElementById('memory-moves').textContent = '0';
+
+  const grid = document.getElementById('memory-grid');
+  const emojis = [...DESSERTS, ...DESSERTS].sort(() => Math.random()-0.5);
+
+  memCards = [];
+  grid.innerHTML = '';
+
+  emojis.forEach((emoji, i) => {
+    const card = document.createElement('div');
+    card.style.cssText = `
+      aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+      background:var(--brown-mid);border:1px solid rgba(201,146,42,0.2);
+      font-size:clamp(1.4rem,5vw,2rem);cursor:pointer;
+      border-radius:2px;user-select:none;
+      transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.2s, border-color 0.2s;
+      transform-style:preserve-3d;position:relative;
+    `;
+
+    card.dataset.emoji = emoji;
+    card.dataset.matched = 'false';
+    card.dataset.flipped = 'false';
+
+    // Show back face (waffle logo)
+    card.innerHTML = '<span style="font-size:1.2em;opacity:0.3;">🧇</span>';
+
+    card.onclick = () => memFlip(card, i);
+    grid.appendChild(card);
+    memCards.push(card);
+  });
+
+  renderScores('memory-scores', getScores('dessertMemory'), ' moves', true);
+}
+
+function memFlip(card, i) {
+  if (memLock) return;
+  if (card.dataset.flipped === 'true') return;
+  if (card.dataset.matched === 'true') return;
+
+  card.dataset.flipped = 'true';
+  card.innerHTML = card.dataset.emoji;
+  card.style.background = 'rgba(201,146,42,0.12)';
+  card.style.borderColor = 'rgba(201,146,42,0.5)';
+  card.style.transform = 'scale(1.06)';
+  memFlipped.push(card);
+
+  if (memFlipped.length === 2) {
+    memMoves++;
+    document.getElementById('memory-moves').textContent = memMoves;
+    memLock = true;
+    setTimeout(checkMemMatch, 650);
+  }
+}
+
+function checkMemMatch() {
+  const [a, b] = memFlipped;
+  if (a.dataset.emoji === b.dataset.emoji) {
+    // Match!
+    [a,b].forEach(c => {
+      c.dataset.matched = 'true';
+      c.style.background = 'rgba(201,146,42,0.25)';
+      c.style.borderColor = 'var(--gold)';
+      c.style.transform = 'scale(1)';
+    });
+    memPairs++;
+    document.getElementById('memory-pairs').textContent = `${memPairs}/8`;
+
+    if (memPairs === 8) {
+      setTimeout(() => {
+        const scores = saveScore('dessertMemory', memMoves, true);
+        renderScores('memory-scores', scores, ' moves', true);
+        alert(`🎉 You matched all desserts in ${memMoves} moves! ${memMoves <= 16 ? '🏆 Amazing!' : memMoves <= 22 ? '😊 Nice!' : '🙂 Keep practicing!'}`);
+      }, 400);
+    }
+  } else {
+    // No match — flip back
+    [a,b].forEach(c => {
+      c.dataset.flipped = 'false';
+      c.innerHTML = '<span style="font-size:1.2em;opacity:0.3;">🧇</span>';
+      c.style.background = 'var(--brown-mid)';
+      c.style.borderColor = 'rgba(201,146,42,0.2)';
+      c.style.transform = 'scale(1)';
+    });
+  }
+  memFlipped = [];
+  memLock = false;
+}
+
+// ── INIT ──
+memoryStart();
+renderScores('stacker-scores', getScores('waffleStacker'));
+renderScores('catcher-scores', getScores('shakeCatcher'));
+renderScores('memory-scores', getScores('dessertMemory'), ' moves', true);
+</script>
+</body>
+</html>
